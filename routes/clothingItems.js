@@ -1,4 +1,4 @@
-const clothingItems = require("express").Router;
+const clothingItems = require("express").Router();
 const {
   getItems,
   createItem,

@@ -1,11 +1,17 @@
 const ClothingItem = require("../models/clothingItem");
 
+const {
+  BAD_REQUEST,
+  NOT_FOUND,
+  INTERNAL_SERVER_ERROR,
+} = require("../utils/errors");
+
 const getItems = (req, res) => {
   ClothingItem.find({})
     .then((items) => res.status(200).send(items))
     .catch((err) => {
       console.error(err);
-      res.status(500).send({ message: err.message });
+      res.status(INTERNAL_SERVER_ERROR).send({ message: err.message });
     });
 };
 
@@ -13,7 +19,7 @@ const createItem = (req, res) => {
   const { name, weatherType, imageUrl, ownerId } = req.body;
 
   if (!name || !weatherType || !imageUrl || !ownerId) {
-    return res.status(400).send({
+    return res.status(BAD_REQUEST).send({
       message: "All fields (name, weatherType, imageUrl, ownerId) are required",
     });
   }
@@ -26,9 +32,9 @@ const createItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        return res.status(400).send({ message: err.message });
+        return res.status(BAD_REQUEST).send({ message: err.message });
       }
-      return res.status(500).send({ message: err.message });
+      return res.status(INTERNAL_SERVER_ERROR).send({ message: err.message });
     });
 };
 
@@ -38,16 +44,18 @@ const deleteItem = (req, res) => {
   ClothingItem.findByIdAndDelete(itemId)
     .then((deletedItem) => {
       if (!deletedItem) {
-        return res.status(404).send({ message: "Item not found" });
+        return res.status(NOT_FOUND).send({ message: "Item not found" });
       }
       res.status(204).send();
     })
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {
-        return res.status(400).send({ message: "Invalid item ID format" });
+        return res
+          .status(BAD_REQUEST)
+          .send({ message: "Invalid item ID format" });
       }
-      return res.status(500).send({ message: err.message });
+      return res.status(INTERNAL_SERVER_ERROR).send({ message: err.message });
     });
 };
 
