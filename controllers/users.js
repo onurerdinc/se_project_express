@@ -1,18 +1,27 @@
 const User = require("../models/user");
-const { BAD_REQUEST, INTERNAL_SERVER_ERROR } = require("../utils/errors");
+const {
+  BAD_REQUEST,
+  INTERNAL_SERVER_ERROR,
+  NOT_FOUND,
+} = require("../utils/errors");
 
 const getUsers = (req, res) => {
   User.find({})
     .then((users) => res.status(200).send(users))
     .catch((err) => {
       console.error(err);
-      return res.status(500).send({ message: err.message });
+      return res.status(INTERNAL_SERVER_ERROR).send({ message: err.message });
     });
 };
 
 const getUser = (req, res) => {
   const { userId } = req.params;
   User.findById(userId)
+    .orFail(() => {
+      const error = new Error("User ID not found");
+      error.statusCode = NOT_FOUND;
+      throw error;
+    })
     .then((user) => res.send(user))
     .catch((err) => {
       console.error(err);
@@ -20,6 +29,10 @@ const getUser = (req, res) => {
         return res
           .status(BAD_REQUEST)
           .send({ message: "Invalid user ID format" });
+      }
+
+      if (err.message === "User ID not found") {
+        return res.status(NOT_FOUND).send({ message: err.message });
       }
       return res.status(INTERNAL_SERVER_ERROR).send({ message: err.message });
     });

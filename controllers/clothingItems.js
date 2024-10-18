@@ -41,19 +41,26 @@ const createItem = (req, res) => {
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
 
-  ClothingItem.findByIdAndDelete(itemId)
-    .then((deletedItem) => {
-      if (!deletedItem) {
-        return res.status(NOT_FOUND).send({ message: "Item not found" });
-      }
-      res.status(204).send();
+  ClothingItem.findById(itemId)
+    .orFail(() => {
+      const error = new Error("Item ID not found");
+      error.statusCode = NOT_FOUND;
+      throw error;
     })
+    .then((deletedItem) => {
+      return deletedItem.remove();
+    })
+    .then(() => res.status(204).send())
     .catch((err) => {
-      console.error(err);
+      console.error(`Error ${err.name}: ${err.message}`);
       if (err.name === "CastError") {
         return res
           .status(BAD_REQUEST)
           .send({ message: "Invalid item ID format" });
+      }
+
+      if (err.message === "Item ID not found") {
+        return res.status(NOT_FOUND).send({ message: err.message });
       }
       return res.status(INTERNAL_SERVER_ERROR).send({ message: err.message });
     });
