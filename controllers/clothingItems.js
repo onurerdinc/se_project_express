@@ -10,19 +10,26 @@ const getItems = (req, res) =>
     .then((items) => res.status(200).send(items))
     .catch((err) => {
       console.error(err);
-      res.status(INTERNAL_SERVER_ERROR).send({ message: err.message });
+      res
+        .status(INTERNAL_SERVER_ERROR)
+        .send({ message: "An error has occurred on the server" });
     });
 
 const createItem = (req, res) => {
-  const { name, weatherType, imageUrl, ownerId } = req.body;
+  const { name, weather, imageUrl } = req.body;
 
-  if (!name || !weatherType || !imageUrl || !ownerId) {
+  if (!name || !weather || !imageUrl) {
     return res.status(BAD_REQUEST).send({
-      message: "All fields (name, weatherType, imageUrl, ownerId) are required",
+      message: "All fields (name, weather, imageUrl) are required",
     });
   }
 
-  const newItem = new ClothingItem({ name, weatherType, imageUrl, ownerId });
+  const newItem = new ClothingItem({
+    name,
+    weather,
+    imageUrl,
+    owner: req.user._id,
+  });
 
   return newItem
     .save()
@@ -30,9 +37,11 @@ const createItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        return res.status(BAD_REQUEST).send({ message: err.message });
+        return res.status(BAD_REQUEST).send({ message: "Invalid data" });
       }
-      res.status(INTERNAL_SERVER_ERROR).send({ message: err.message });
+      res
+        .status(INTERNAL_SERVER_ERROR)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -46,19 +55,19 @@ const deleteItem = (req, res) => {
       throw error;
     })
     .then((deletedItem) => deletedItem.remove())
-    .then(() => res.status(204).send())
+    .then(() => res.status(200).send())
     .catch((err) => {
       console.error(`Error ${err.name}: ${err.message}`);
       if (err.name === "CastError") {
-        return res
-          .status(BAD_REQUEST)
-          .send({ message: "Invalid item ID format" });
+        return res.status(BAD_REQUEST).send({ message: "Invalid data" });
       }
 
       if (err.message === "Item ID not found") {
         return res.status(NOT_FOUND).send({ message: err.message });
       }
-      res.status(INTERNAL_SERVER_ERROR).send({ message: err.message });
+      res
+        .status(INTERNAL_SERVER_ERROR)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -68,15 +77,19 @@ const likeItem = (req, res) =>
     { $addToSet: { likes: req.user._id } },
     { new: true }
   )
-    .orFail()
+    .orFail(() => {
+      const error = new Error("Item ID not found");
+      error.statusCode = NOT_FOUND;
+      throw error;
+    })
     .then((item) => res.status(200).send(item))
     .catch((err) => {
       console.error(err);
-      if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).send({ message: err.message });
-      }
       if (err.name === "CastError") {
-        return res.status(BAD_REQUEST).send({ message: err.message });
+        return res.status(BAD_REQUEST).send({ message: "Invalid data" });
+      }
+      if (err.message === "Item ID not found") {
+        return res.status(NOT_FOUND).send({ message: "Invalid data" });
       }
       res
         .status(INTERNAL_SERVER_ERROR)
@@ -89,15 +102,19 @@ const unlikeItem = (req, res) =>
     { $pull: { likes: req.user._id } },
     { new: true }
   )
-    .orFail()
-    .then(() => res.status(200).send({ message: "Unlike successfully" }))
+    .orFail(() => {
+      const error = new Error("Item ID not found");
+      error.statusCode = NOT_FOUND;
+      throw error;
+    })
+    .then((item) => res.status(200).send({ message: "Unliked successfully" }))
     .catch((err) => {
       console.error(err);
-      if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).send({ message: err.message });
-      }
       if (err.name === "CastError") {
         return res.status(BAD_REQUEST).send({ message: "Invalid data" });
+      }
+      if (err.message === "Item ID not found") {
+        return res.status(NOT_FOUND).send({ message: err.message });
       }
       res
         .status(INTERNAL_SERVER_ERROR)
