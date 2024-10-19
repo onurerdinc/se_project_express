@@ -39,7 +39,7 @@ const createItem = (req, res) => {
       if (err.name === "ValidationError") {
         return res.status(BAD_REQUEST).send({ message: "Invalid data" });
       }
-      res
+      return res
         .status(INTERNAL_SERVER_ERROR)
         .send({ message: "An error has occurred on the server" });
     });
@@ -54,18 +54,17 @@ const deleteItem = (req, res) => {
       error.statusCode = NOT_FOUND;
       throw error;
     })
-    .then((deletedItem) => deletedItem.remove())
+    .then(() => ClothingItem.findByIdAndRemove(itemId))
     .then(() => res.status(200).send())
     .catch((err) => {
       console.error(`Error ${err.name}: ${err.message}`);
       if (err.name === "CastError") {
         return res.status(BAD_REQUEST).send({ message: "Invalid data" });
       }
-
       if (err.message === "Item ID not found") {
         return res.status(NOT_FOUND).send({ message: err.message });
       }
-      res
+      return res
         .status(INTERNAL_SERVER_ERROR)
         .send({ message: "An error has occurred on the server" });
     });
@@ -89,9 +88,9 @@ const likeItem = (req, res) =>
         return res.status(BAD_REQUEST).send({ message: "Invalid data" });
       }
       if (err.message === "Item ID not found") {
-        return res.status(NOT_FOUND).send({ message: "Invalid data" });
+        return res.status(NOT_FOUND).send({ message: err.message });
       }
-      res
+      return res
         .status(INTERNAL_SERVER_ERROR)
         .send({ message: "An error has occurred on the server" });
     });
@@ -107,7 +106,7 @@ const unlikeItem = (req, res) =>
       error.statusCode = NOT_FOUND;
       throw error;
     })
-    .then((item) => res.status(200).send({ message: "Unliked successfully" }))
+    .then(() => res.status(200).send({ message: "Unliked successfully" }))
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {
@@ -116,7 +115,7 @@ const unlikeItem = (req, res) =>
       if (err.message === "Item ID not found") {
         return res.status(NOT_FOUND).send({ message: err.message });
       }
-      res
+      return res
         .status(INTERNAL_SERVER_ERROR)
         .send({ message: "An error has occurred on the server" });
     });
