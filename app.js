@@ -1,15 +1,10 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const mainRouter = require("./routes/index");
-const clothingItems = require("./routes/clothingItems");
-const { NOT_FOUND } = require("./utils/errors");
-
+const { PORT = 3001 } = process.env;
 const app = express();
 
-const { PORT = 3001 } = process.env;
-
 mongoose.set("strictQuery", false);
-
 mongoose
   .connect("mongodb://127.0.0.1:27017/wtwr_db", {
     useNewUrlParser: true,
@@ -29,12 +24,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/", mainRouter);
-app.use("/items", clothingItems);
-
-app.use((req, res) => {
-  res.status(NOT_FOUND).send({ message: "Requested resource not found" });
-});
+app.use(mainRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
