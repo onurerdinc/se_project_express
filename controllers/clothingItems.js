@@ -1,19 +1,17 @@
-const ClothingItem = require("../models/clothingItems.js");
-
+const ClothingItem = require("../models/clothingItems");
 const {
   BAD_REQUEST,
   NOT_FOUND,
   INTERNAL_SERVER_ERROR,
 } = require("../utils/errors");
 
-const getItems = (req, res) => {
-  return ClothingItem.find({})
+const getItems = (req, res) =>
+  ClothingItem.find({})
     .then((items) => res.status(200).send(items))
     .catch((err) => {
       console.error(err);
       res.status(INTERNAL_SERVER_ERROR).send({ message: err.message });
     });
-};
 
 const createItem = (req, res) => {
   const { name, weatherType, imageUrl, ownerId } = req.body;
@@ -64,9 +62,8 @@ const deleteItem = (req, res) => {
     });
 };
 
-const likeItem = (req, res) => {
-  // Removed the console.log statement
-  return ClothingItem.findByIdAndUpdate(
+const likeItem = (req, res) =>
+  ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     { $addToSet: { likes: req.user._id } },
     { new: true }
@@ -83,12 +80,11 @@ const likeItem = (req, res) => {
       }
       res
         .status(INTERNAL_SERVER_ERROR)
-        .send({ message: "An error has occurred on the server " });
+        .send({ message: "An error has occurred on the server" });
     });
-};
 
-const unlikeItem = (req, res) => {
-  return ClothingItem.findByIdAndUpdate(
+const unlikeItem = (req, res) =>
+  ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     { $pull: { likes: req.user._id } },
     { new: true }
@@ -105,9 +101,8 @@ const unlikeItem = (req, res) => {
       }
       res
         .status(INTERNAL_SERVER_ERROR)
-        .send({ message: "An error has occurred on the server " });
+        .send({ message: "An error has occurred on the server" });
     });
-};
 
 module.exports = {
   createItem,
