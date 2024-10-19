@@ -30,7 +30,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/", mainRouter);
-app.use("/clothingItems", clothingItems);
+app.use("/items", clothingItems);
 
 app.use((req, res) => {
   res.status(NOT_FOUND).send({ message: "Requested resource not found" });
