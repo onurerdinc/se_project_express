@@ -20,7 +20,7 @@ const auth = (req, res, next) => {
       .status(AUTHENTICATIONERROR)
       .send({ message: "Authorization required" });
   }
-  req.user = payload;
+  req.user = { _id: payload._id };
   return next();
 };
 
