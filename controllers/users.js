@@ -1,8 +1,15 @@
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const validator = require("validator");
 const User = require("../models/user");
+const { JWT_SECRET } = require("../utils/config");
+
 const {
   BAD_REQUEST,
   INTERNAL_SERVER_ERROR,
   NOT_FOUND,
+  AUTHENTICATIONERROR,
+  CONFLICT,
 } = require("../utils/errors");
 
 const getUsers = (req, res) => {
