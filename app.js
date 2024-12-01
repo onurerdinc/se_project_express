@@ -1,16 +1,22 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const { errors } = require("celebrate");
 
 mongoose.set("strictQuery", true);
 const cors = require("cors");
 const mainRouter = require("./routes/index");
 const errorHandler = require("./middlewares/errorHandler");
+const { requestLogger, errorLogger } = require("./middlewares/logger");
 
 const app = express();
 const { PORT = 3001 } = process.env;
 
 app.use(express.json());
 app.use(cors());
+app.use(errorHandler);
+app.use(errors());
+app.use(requestLogger);
+app.use(errorLogger);
 
 app.use((req, res, next) => {
   if (process.env.NODE_ENV === "test") {
@@ -20,8 +26,7 @@ app.use((req, res, next) => {
   }
   next();
 });
-
-app.use(errorHandler);
+app.use("/", mainRouter);
 
 mongoose
   .connect("mongodb://127.0.0.1:27017/wtwr_db")
@@ -34,5 +39,3 @@ mongoose
   .catch((error) => {
     console.error("Error connecting to the database", error);
   });
-
-app.use("/", mainRouter);
