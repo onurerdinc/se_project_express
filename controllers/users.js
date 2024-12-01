@@ -4,14 +4,11 @@ const validator = require("validator");
 const User = require("../models/user");
 const { JWT_SECRET } = require("../utils/config");
 
-const {
-  BadRequestError,
-  ConflictError,
-  ForbiddenError,
-  NotFoundError,
-  UnauthorizedError,
-  InternalServerError,
-} = require("../utils/errors");
+const { BadRequestError } = require("../utils/errors/BadRequestError");
+const { NotFoundError } = require("../utils/errors/NotFoundError");
+const { ConflictError } = require("../utils/errors/ConflictError");
+const { UnauthorizedError } = require("../utils/errors/UnauthorizedError");
+const { InternalServerError } = require("../utils/errors/InternalServerError");
 
 const createUser = (req, res, next) => {
   const { name, avatar, email, password } = req.body;
@@ -20,7 +17,7 @@ const createUser = (req, res, next) => {
     return next(new BadRequestError("Email and password are required"));
   }
 
-  User.findOne({ email })
+  return User.findOne({ email })
     .then((user) => {
       if (user) {
         return next(new ConflictError("The user already exists"));
@@ -60,7 +57,7 @@ const login = (req, res, next) => {
     return next(new BadRequestError("Invalid email format"));
   }
 
-  User.findUserByCredentials(email, password)
+  return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",

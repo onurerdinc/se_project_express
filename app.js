@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+
 mongoose.set("strictQuery", true);
 const cors = require("cors");
 const mainRouter = require("./routes/index");

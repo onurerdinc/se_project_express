@@ -3,7 +3,7 @@ const userRouter = require("./users");
 const clothingItem = require("./clothingItems");
 const { login, createUser } = require("../controllers/users");
 
-const { NOT_FOUND } = require("../utils/errors");
+const { NOT_FOUND } = require("../utils/errors/errors");
 
 router.post("/signup", createUser);
 router.post("/signin", login);

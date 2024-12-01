@@ -1,12 +1,8 @@
 const ClothingItem = require("../models/clothingItems");
-const {
-  BadRequestError,
-  ConflictError,
-  ForbiddenError,
-  NotFoundError,
-  UnauthorizedError,
-  InternalServerError,
-} = require("../utils/errors");
+const { BadRequestError } = require("../utils/errors/BadRequestError");
+const { NotFoundError } = require("../utils/errors/NotFoundError");
+const { InternalServerError } = require("../utils/errors/InternalServerError");
+const { ForbiddenError } = require("../utils/errors/ForbiddenError");
 
 const createItem = (req, res, next) => {
   const owner = req.user._id;
@@ -68,7 +64,7 @@ const deleteItem = (req, res, next) => {
 };
 
 const likeItem = (req, res, next) => {
-  const itemId = req.params.itemId;
+  const { itemId } = req.params.itemId;
 
   ClothingItem.findByIdAndUpdate(
     itemId,
@@ -92,7 +88,7 @@ const likeItem = (req, res, next) => {
 };
 
 const unlikeItem = (req, res, next) => {
-  const itemId = req.params.itemId;
+  const { itemId } = req.params.itemId;
 
   ClothingItem.findByIdAndUpdate(
     itemId,
