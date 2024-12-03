@@ -1,12 +1,11 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const { errors } = require("celebrate");
-
-mongoose.set("strictQuery", true);
 const cors = require("cors");
 const mainRouter = require("./routes/index");
 const errorHandler = require("./middlewares/errorHandler");
+const { errors } = require("celebrate");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
+mongoose.set("strictQuery", true);
 
 const app = express();
 const { PORT = 3001 } = process.env;

@@ -64,7 +64,7 @@ const deleteItem = (req, res, next) => {
 };
 
 const likeItem = (req, res, next) => {
-  const { itemId } = req.params.itemId;
+  const { itemId } = req.params;
 
   ClothingItem.findByIdAndUpdate(
     itemId,
@@ -88,7 +88,7 @@ const likeItem = (req, res, next) => {
 };
 
 const unlikeItem = (req, res, next) => {
-  const { itemId } = req.params.itemId;
+  const { itemId } = req.params;
 
   ClothingItem.findByIdAndUpdate(
     itemId,
