@@ -22,6 +22,19 @@ The back-end project is focused on creating a server for the WTWR application. Y
 - **Mongoose**: ODM (Object Data Modeling) library for MongoDB and Node.js, used to model the application data.
 - **Nodemon**: Tool for automatically restarting the server during development.
 
+## Hosting
+
+The application is deployed and hosted using **Google Cloud Platform (GCP)**. This ensures reliability, scalability, and easy access for end-users.  
+
+## Domains
+
+The following domains are used for this project:
+
+- [api.wtwr.wooloo.net](https://api.wtwr.wooloo.net)
+- [wtwr.wooloo.net](https://wtwr.wooloo.net)
+- [www.wtwr.wooloo.net](https://www.wtwr.wooloo.net)
+
+
 ## Running the Project
 
 `npm run start` — to launch the server
@@ -31,3 +44,4 @@ The back-end project is focused on creating a server for the WTWR application. Y
 ### Testing
 
 Before committing your code, make sure you edit the file `sprint.txt` in the root folder. The file `sprint.txt` should contain the number of the sprint you're currently working on. For ex. 12
+
