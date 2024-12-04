@@ -1,7 +1,6 @@
 # WTWR (What to Wear?): Back End
 
-The back-end project is focused on creating a server for the WTWR application. You’ll gain a deeper understanding of how to work with databases, set up security and testing, and deploy web applications on a remote machine. The eventual goal is to create a server with an API and user authorization.
-
+This project represents the backend of the WTWR application, built using Node.js, Express, and MongoDB. It features robust routing and controller logic to handle fetching, creating, and deleting items for the frontend. The backend also incorporates secure user authentication and data storage, enabling users to create and manage their accounts safely. All API endpoints were rigorously tested with Postman to ensure functionality, accuracy, and performance.
 ## Functionality
 
 - **User Management**:
