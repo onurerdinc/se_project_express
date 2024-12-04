@@ -14,10 +14,14 @@ const { PORT = 3001 } = process.env;
 
 app.use(express.json());
 app.use(cors());
-app.use(errorHandler);
-app.use(errors());
+
 app.use(requestLogger);
+app.use("/", mainRouter);
+
 app.use(errorLogger);
+app.use(errors());
+
+app.use(errorHandler);
 
 app.get("/crash-test", () => {
   setTimeout(() => {
@@ -33,7 +37,6 @@ app.use((req, res, next) => {
   }
   next();
 });
-app.use("/", mainRouter);
 
 mongoose
   .connect("mongodb://127.0.0.1:27017/wtwr_db")
