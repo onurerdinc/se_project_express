@@ -11,14 +11,19 @@ const {
   unlikeItem,
 } = require("../controllers/clothingItems");
 
-router.post("/", auth, createItem);
+const {
+  validateItemId,
+  validateCardBody,
+} = require("../middlewares/validation");
+
+router.post("/", auth, validateCardBody, createItem);
 
 router.get("/", getItems);
 
-router.put("/:itemId/likes", auth, likeItem);
+router.put("/:itemId/likes", validateItemId, auth, likeItem);
 
-router.delete("/:itemId", auth, deleteItem);
+router.delete("/:itemId", validateItemId, auth, deleteItem);
 
-router.delete("/:itemId/likes", auth, unlikeItem);
+router.delete("/:itemId/likes", validateItemId, auth, unlikeItem);
 
 module.exports = router;
