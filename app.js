@@ -29,15 +29,6 @@ app.get("/crash-test", () => {
   }, 0);
 });
 
-app.use((req, res, next) => {
-  if (process.env.NODE_ENV === "test") {
-    req.user = {
-      _id: "5d8b8592978f8bd833ca8133",
-    };
-  }
-  next();
-});
-
 mongoose
   .connect("mongodb://127.0.0.1:27017/wtwr_db")
   .then(() => {
