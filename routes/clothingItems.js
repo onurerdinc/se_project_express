@@ -20,10 +20,10 @@ router.post("/", auth, validateCardBody, createItem);
 
 router.get("/", getItems);
 
-router.put("/:itemId/likes", validateItemId, auth, likeItem);
+router.put("/:itemId/likes", auth, validateItemId, likeItem);
 
-router.delete("/:itemId", validateItemId, auth, deleteItem);
+router.delete("/:itemId", auth, validateItemId, deleteItem);
 
-router.delete("/:itemId/likes", validateItemId, auth, unlikeItem);
+router.delete("/:itemId/likes", auth, validateItemId, unlikeItem);
 
 module.exports = router;
